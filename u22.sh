@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Clear the screen
+clear
+
 # Display the ASCII art banner
 cat << "EOF"
   __  __   __  __          _____ _    _ _____            ____ _____ 
@@ -9,70 +12,56 @@ cat << "EOF"
  | |  | |_| |  | |/ ____ \ |__| | |  | | | \ \  / ____ \| |_) || |_ 
  |_|  |_(_)_|  |_/_/    \_\_____|_|  |_|_|  \_\/_/    \_\____/_____|
                                                                     
+                                                                    
 EOF
 
 # Prompt for hostname
 read -p "Enter the hostname for the machine: " hostname
 
+# Delay for 6 seconds
+sleep 6s
+
 # Set the hostname
-echo "Setting hostname to: $hostname"
+sudo hostnamectl set-hostname $hostname
 
 # Create and enable swapfile
-echo "Creating swapfile..."
-echo "Swapfile created successfully."
-echo "Setting permissions..."
-echo "Permissions set successfully."
-echo "Setting up swap..."
-echo "Swap setup completed."
+sudo dd if=/dev/zero of=/swapfile bs=1M count=2048 status=progress
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 # Download NoMachine
-echo "Downloading NoMachine..."
-echo "NoMachine downloaded successfully."
+sudo wget https://download.nomachine.com/download/8.4/Linux/nomachine_8.4.2_1_amd64.deb
 
 # Install Webmin
-echo "Installing Webmin..."
-echo "Webmin installation complete."
+curl -o setup-repos.sh https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh
+sh setup-repos.sh
+sudo apt-get install webmin --install-recommends -y
 
 # Install CasaOS
-echo "Installing CasaOS..."
-echo "CasaOS installation complete."
+curl -fsSL https://get.casaos.io | sudo bash
 
 # Install Docker Compose
-echo "Installing Docker Compose..."
-echo "Docker Compose installed successfully."
+sudo apt install docker-compose -y
 
 # Update package lists
-echo "Updating package lists..."
-echo "Package lists updated successfully."
-
+sudo apt-get update 
 # Upgrade installed packages
-echo "Upgrading installed packages..."
-echo "Packages upgraded successfully."
-
+sudo apt-get upgrade -y
 # Install Ubuntu desktop environment
-echo "Installing Ubuntu desktop environment..."
-echo "Desktop environment installed successfully."
-
+sudo apt-get install ubuntu-desktop -y
 # Install Stacer
-echo "Installing Stacer..."
-echo "Stacer installed successfully."
-
+sudo apt-get install stacer -y
 # Install mmv
-echo "Installing mmv..."
-echo "mmv installed successfully."
-
+sudo apt-get install mmv -y
 # Install Firefox
-echo "Installing Firefox..."
-echo "Firefox installed successfully."
-
+sudo apt-get install firefox -y
 # Install qdirstat
-echo "Installing qdirstat..."
-echo "qdirstat installed successfully."
+sudo apt-get install qdirstat -y
 
 # Install NoMachine
-echo "Installing NoMachine..."
-echo "NoMachine installed successfully."
+sudo apt install -f ./nomachine_8.4.2_1_amd64.deb
 
 # Reboot the system
-echo "Rebooting the system..."
-echo "System rebooted successfully."
+sudo reboot
