@@ -7,3 +7,4 @@ $curl -L -o u22.sh https://raw.githubusercontent.com/MohamedMaghrby/Ubuntu-22.04
 #then
 install app store 
 $snap install snap-store
+$sudo systemctl enable nxserver
